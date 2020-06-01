@@ -19,6 +19,7 @@ function loadEventListeners() {
   // event delegation - listener applied to the entire ul
   taskList.addEventListener("click", deleteTask);
   clearBtn.addEventListener("click", clearTasks);
+  filter.addEventListener("keyup", filterTasks);
 }
 
 // funtion to add a task - takes an event input
@@ -28,15 +29,15 @@ function addTask(e) {
   }
   else {
     // create a new li, give it Materialize classes & append text node shwoing new task
-    let li = document.createElement("li");
+    const li = document.createElement("li");
     li.className = "collection-item";
-    let text = document.createTextNode(taskInput.value);
+    const text = document.createTextNode(taskInput.value);
     li.appendChild(text);
 
     // create the link element and the inner remove icon
-    let link = document.createElement("a");
+    const link = document.createElement("a");
     link.className = "delete-item secondary-content";
-    let cross = document.createElement('i');
+    const cross = document.createElement('i');
     cross.className = "fa fa-remove";
 
     // append the new elements together
@@ -56,7 +57,7 @@ function deleteTask(e) {
   if (e.target.parentElement.classList.contains("delete-item")) {
     if (confirm("Are you sure you want to delete this task?")) {
       // e.target is the i element - so the li is the parent's parent!
-      let liToRemove = e.target.parentElement.parentElement;
+      const liToRemove = e.target.parentElement.parentElement;
       console.log(liToRemove);
       taskList.removeChild(liToRemove);
     }
@@ -73,7 +74,28 @@ function clearTasks(e) {
   //   taskList.removeChild(li);
   // });
 
+  // easier way to do it!
   while (taskList.firstChild) {
     taskList.removeChild(taskList.firstChild);
   }
+}
+
+function filterTasks(e) {
+  // Get the text input into the filter and make it lower case so we can compare
+  const text = e.target.value.toLowerCase();
+  console.log(text);
+
+  // get a nodelist of all the li items
+  const tasks = document.querySelectorAll(".collection-item");
+
+  // loop through all lis and check if the filter term is in any of them
+  tasks.forEach(function (task) {
+    const item = task.firstChild.textContent.toLowerCase();
+    if (item.indexOf(text) != -1) {
+      task.style.display = "block";
+    }
+    else {
+      task.style.display = "none";
+    }
+  });
 }
