@@ -14,8 +14,11 @@ const taskInput = document.querySelector("#task");
 loadEventListeners();
 
 function loadEventListeners() {
-  // Add task event
+  // Add events for adding and removing tasks
   form.addEventListener("submit", addTask);
+  // event delegation - listener applied to the entire ul
+  taskList.addEventListener("click", deleteTask);
+  clearBtn.addEventListener("click", clearTasks);
 }
 
 // funtion to add a task - takes an event input
@@ -44,7 +47,33 @@ function addTask(e) {
     // clear the input field
     taskInput.value = '';
   }
-
   // prevent the default submit behaviour
   e.preventDefault();
+}
+
+function deleteTask(e) {
+  // using event delegation so first check the click is in the right place
+  if (e.target.parentElement.classList.contains("delete-item")) {
+    if (confirm("Are you sure you want to delete this task?")) {
+      // e.target is the i element - so the li is the parent's parent!
+      let liToRemove = e.target.parentElement.parentElement;
+      console.log(liToRemove);
+      taskList.removeChild(liToRemove);
+    }
+  }
+}
+
+function clearTasks(e) {
+  console.log(e);
+
+  // // put all of the existing lis into a nodelist
+  // let lis = document.querySelectorAll("li.collection-item");
+  // // for each item in the nodelist - remove it from the taskList
+  // lis.forEach(function (li) {
+  //   taskList.removeChild(li);
+  // });
+
+  while (taskList.firstChild) {
+    taskList.removeChild(taskList.firstChild);
+  }
 }
